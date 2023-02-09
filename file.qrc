@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>icons/volume_off_FILL1_wght400_GRAD0_opsz48.png</file>
+    <file>icons/volume1.png</file>
+    <file>icons/volume2.png</file>
+    <file>icons/volume_up_FILL1_wght400_GRAD0_opsz48.png</file>
+    <file>icons/close3.png</file>
+    <file>icons/17047.png</file>
+    <file>icons/canc.png</file>
+    <file>icons/close1.png</file>
+    <file>icons/close2.png</file>
+  </qresource>
+</RCC>

@@ -22,17 +22,17 @@ class VoiceThreadHandler(QThread):
 
         # инициализация метода CountVectorizer
         vectorizer = CountVectorizer()
-        vector = vectorizer.fit_transform(list(words.data_set.keys()))
+        vector = vectorizer.fit_transform(list(words.data_set.keys()))  # изучает словарь и возвращает матрицу векторов
 
-        clf = LogisticRegression()
-        clf.fit(vector, list(words.data_set.values()))
+        clf = LogisticRegression()  # классификатор логистической регрессии
+        clf.fit(vector, list(words.data_set.values()))  # подбирает модель в соответствии с данными обучения
 
         # del words.data_set
 
         while True:
             try:
                 if self.handler_status:
-                    self.rec = sr.Recognizer()
+                    self.rec = sr.Recognizer()  # создаём экземпляр, для распознавания речи
                     self.rec.pause_threshold = 0.5
 
                     with sr.Microphone() as micro:
@@ -56,14 +56,13 @@ class VoiceThreadHandler(QThread):
                 break
 
     def main_fun(self, get_voice, vectorizer, clf):
-        name = words.NAME_ROBOT.intersection(get_voice.split())
-        print(name)
+        name = words.NAME_ROBOT.intersection(get_voice.split())  # Возвращает пересечение двух множеств
         if name:
             get_voice.replace(list(name)[0], '')
             vector_text = vectorizer.transform([get_voice]).toarray()[0]
             bot_answer = clf.predict([vector_text])[0]
             name_of_func = bot_answer.split()[0]
-            if name_of_func == "wiki_definitions":
+            if name_of_func == 'wiki_definitions':
                 definition = get_voice.split()[-1]
                 func_on = f'self.{name_of_func}("{definition}")'
             else:

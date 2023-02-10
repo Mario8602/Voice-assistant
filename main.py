@@ -1,5 +1,6 @@
 import sys
 
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PySide6.QtCore import Qt
 from PySide6 import QtGui, QtCore
@@ -7,6 +8,8 @@ import speech_recognition as sr
 
 from design1 import Ui_MainWindow
 from myhandler import VoiceThreadHandler
+
+import pyttsx3
 
 
 class MyVoiceHandler(QMainWindow):
@@ -25,6 +28,7 @@ class MyVoiceHandler(QMainWindow):
         self.ui.btn_4.clicked.connect(lambda: self.close())
         self.ui.btn_3.clicked.connect(lambda: self.showMinimized())
         self.ui.btn_2.clicked.connect(self.check_voice)
+        self.ui.btn_1.clicked.connect(self.first_but)
 
         # основные действия бота
         self.ui.btn_mic.clicked.connect(self.check_micro)
@@ -38,6 +42,11 @@ class MyVoiceHandler(QMainWindow):
     @staticmethod
     def hello_world():
         print("hi ;)")
+
+    # функция для кнопки "?"
+    def first_but(self):
+        self.ui.plain_text.clear()
+        self.ui.plain_text.appendPlainText('?')
 
     # нажатие на клавишу мышки
     def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
@@ -58,15 +67,32 @@ class MyVoiceHandler(QMainWindow):
         event.accept()
 
     def check_voice(self):
-        self.ui.btn_2.setIcon()
+        # self.ui.btn_2.setIcon()
+        icon = QIcon()
+        icon.addFile("icons/volume2.png", state=QIcon.On)
+        icon.addFile("icons/volumg", state=QIcon.Off)
+
+        self.ui.btn_2.setCheckable(True)
+        self.ui.btn_2.setIcon(icon)
+
+        if self.ui.btn_2.isChecked():
+            self.ui.plain_text.clear()
+            self.ui.plain_text.appendPlainText('Звук отключен')
+
+        else:
+            self.ui.plain_text.clear()
+            self.ui.plain_text.appendPlainText('Звук включен')
+            voice_start = pyttsx3.init()
+            voice_start.say('Звук включен')
+            voice_start.runAndWait()
+            voice_start.stop()
 
     # проверка включенных микрофонов
     def check_micro(self):
         mic_list = sr.Microphone.list_microphone_names()
         if len(mic_list) == 0:
             mic_list = "Нет подключенных микрофонов"
-        print(mic_list)
-        QMessageBox.about(self, "Подключенные микрофоны:", str(mic_list))
+        QMessageBox.about(self, "Подключенные микрофоны: ", str(mic_list).encode("cp1251").decode('utf-8'))
 
     # функции обрабатываемые ботом
     def about_me(self):
@@ -92,7 +118,6 @@ class MyVoiceHandler(QMainWindow):
 
     # обработка запроса полученных с потока QThread VoiceThreadHandler
     def signal_handler(self, value: list) -> None:
-        print(value)
         if value[0] == "start_bot":
             self.ui.plain_text.clear()
             self.ui.plain_text.appendPlainText("\n  Say something..."
@@ -101,6 +126,8 @@ class MyVoiceHandler(QMainWindow):
 
         elif value[0] == "say_some":
             self.ui.plain_text.appendPlainText(value[1])
+            voice_start.say(value[1])
+            voice_start.runAndWait()
 
         elif value[0] == "stop_bot":
             print("Я ЕГО СТОПАНУЛ")

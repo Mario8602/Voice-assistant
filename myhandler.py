@@ -4,6 +4,7 @@ import random
 # библиотека для распознавания речи
 import speech_recognition as sr
 from PySide6.QtCore import QThread, Signal
+import pyttsx3
 
 # библиотека машинного обучения
 from sklearn.feature_extraction.text import CountVectorizer
@@ -17,6 +18,7 @@ class VoiceThreadHandler(QThread):
     pause_threshold = 0.5
     signals = Signal(list)
     handler_status = True
+    voice_start = pyttsx3.init()
 
     def run(self):
 

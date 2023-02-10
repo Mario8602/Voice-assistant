@@ -126,8 +126,6 @@ class MyVoiceHandler(QMainWindow):
 
         elif value[0] == "say_some":
             self.ui.plain_text.appendPlainText(value[1])
-            voice_start.say(value[1])
-            voice_start.runAndWait()
 
         elif value[0] == "stop_bot":
             print("Я ЕГО СТОПАНУЛ")
